@@ -16,18 +16,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.startapp.android.publish.ads.nativead.NativeAdDetails;
-import com.startapp.android.publish.ads.nativead.NativeAdPreferences;
-import com.startapp.android.publish.ads.nativead.StartAppNativeAd;
-import com.startapp.android.publish.adsCommon.Ad;
-import com.startapp.android.publish.ads.banner.Banner;
-import com.startapp.android.publish.ads.banner.BannerListener;
-import com.startapp.android.publish.adsCommon.StartAppAd;
-import com.startapp.android.publish.adsCommon.StartAppAd.AdMode;
-import com.startapp.android.publish.adsCommon.StartAppSDK;
-import com.startapp.android.publish.adsCommon.VideoListener;
-import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
-import com.startapp.android.publish.adsCommon.adListeners.AdEventListener;
+import com.startapp.sdk.*;
 
 public class StartAppAdsPlugin extends CordovaPlugin {
 
