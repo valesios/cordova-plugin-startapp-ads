@@ -1,41 +1,20 @@
-# Cordova Plugin for StartApp Ads
-<table>
-<tr>
-<td>
-Cordova Plugin for StartApp Ads. This Cordova Plugin is made to use StartApp Ads with Frameworks like Ionic. You can use Banner Ads, Interstitial Ads and Video Reward Ads. Easy to implement and easy to use. Please read the documentation below!
-</tr>
-</table>
-
-###  IMPORTANT
-<table>
-<tr>
-<td>
-:warning: Only ANDROID is supported at the moment. I'm working hard to implement iOS as well. Stay tuned for future updates!
-</td>
-</tr>
-</table>
-
-## Ionic 3+ Implementation
+# Cordova Plugin for Start.io (ex. StartApp) Ads
+### This if fork from <a href="https://github.com/lreiner/cordova-plugin-startapp-ads">Cordova Plugin for StartApp Ads</a>
 
 ### 1. Installation
-First you need to install the cordova plugin in your Ionic Project with Cordova CLI
+First you need to install the cordova plugin in your Cordova Project
 
 ```
-ionic cordova plugin add cordova-plugin-startapp-ads
-```
-or with URL
-```
-ionic cordova plugin add https://github.com/lreiner/cordova-plugin-startapp-ads.git
+cordova plugin add https://github.com/valesios/cordova-plugin-startio-ads.git
 ```
 
 ### 2. Setup the Plugin
 To start declare the Plugin below your imports:
 **NOTE: This must be declared in every Page where you want to use StartAppAds!**
 ```javascript
-import ..... //your imports
-declare var StartAppAds:any;
+var StartAppAds;
 ```
-Now you need to init your Plugin with your App ID from StartApp first. I would recommend to do it in your **app.component.ts** file when platfrom is ready.
+Now you need to init your Plugin with your App ID from Start.io first.
 ```javascript
 this.platform.ready().then(() => {
   if(this.platform.is("android")) {
@@ -43,10 +22,10 @@ this.platform.ready().then(() => {
   }
 });
 ```
-Nice! :) Now you can use StartAppAds everywhere in your project.
+Now you can use StartAppAds everywhere in your project.
 
 ### 3. Show/Hide Banner Ads
-Show a Banner Ad on the bottom of your app. (I recommend to either do this in **app.components.ts** or in the **constructor** of any other page).
+Show a Banner Ad on the bottom of your app. 
 ```javascript
 StartAppAds.showBanner();
 ```
@@ -146,20 +125,3 @@ document.addEventListener('startappads.reward_video.load_fail', () => {
   //do something here
 });
 ```
-
-## Donation [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/LukasReiner/) 
-If this project help you reduce time to develop, you can give me a cup of coffee (or a Beer of course) :)
-
-[![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://www.paypal.me/LukasReiner/) 
-
-## Git - Fork
-
-```
-$ git clone https://github.com/lreiner/cordova-plugin-startapp-ads
-```
-When you fork a project in order to propose changes to the original repository, you can configure Git to pull changes from the original, or upstream, repository into the local clone of your fork.</br >
-[Click here to see how to keep a fork synched](https://help.github.com/articles/fork-a-repo/)
-
-## Releases
-
-Too see all published releases, please take a look at the [tags of this repository](https://github.com/lreiner/cordova-plugin-startapp-ads/tags).
