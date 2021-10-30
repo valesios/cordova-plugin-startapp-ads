@@ -43,7 +43,8 @@ document.addEventListener('startappads.banner.load', () => {
 document.addEventListener('startappads.banner.load_fail', () => {
   //banner failed to load
   //do something here
-  //IMPORTANT: if banner failed to load dont use StartAppAds.showBanner(); again. StartAppAds will load a new one by itself!
+  //IMPORTANT: if banner failed to load dont use StartAppAds.showBanner(); again. 
+  //StartAppAds will load a new one by itself!
 });
 
 document.addEventListener('startappads.banner.clicked', () => {
@@ -90,7 +91,8 @@ document.addEventListener('startappads.interstitial.load_fail', () => {
 ```
 #### IMPORTANT:
 ```
-Do not call `showInterstitial()` from within `load_fail` event. The SDK will automatically try to reload an ad upon a failure.
+Do not call `showInterstitial()` from within `load_fail` event. 
+The SDK will automatically try to reload an ad upon a failure.
 ```
 
 ### 5. Show Rewarded Video Ads
