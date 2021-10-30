@@ -10,7 +10,7 @@ cordova plugin add https://github.com/valesios/cordova-plugin-startio-ads.git
 
 ### 2. Setup the Plugin
 To start declare the Plugin below your imports:
-**NOTE: This must be declared in every Page where you want to use StartAppAds!**
+**NOTE: This must be declared in every Page where you want to use Start.io Ads!**
 ```javascript
 var StartAppAds;
 ```
