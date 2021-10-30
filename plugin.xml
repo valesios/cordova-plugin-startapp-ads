@@ -2,13 +2,13 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="cordova-plugin-startapp-ads"
-    version="1.1.0">
+    version="4.8.11">
     <name>StartApp Ads</name>
     <description></description>
     <license>MIT</license>
     <keywords>startapp, ads, android, ios, plugin</keywords>
-    <repo>https://github.com/lreiner/cordova-plugin-startapp-ads.git</repo>
-    <issue>https://github.com/lreiner/cordova-plugin-startapp-ads/issues</issue>
+    <repo>https://github.com/valesios/cordova-plugin-startapp-ads.git</repo>
+    <issue>https://github.com/valesios/cordova-plugin-startapp-ads/issues</issue>
 
     <js-module src="www/startappads.js" name="StartAppAds">
       <runs/>
@@ -21,7 +21,6 @@
     </engines>
 
     <platform name="android">
-      <preference name="APP_ID_ANDROID" default="test" />
       <config-file target="AndroidManifest.xml" mode="merge" parent="/manifest/application">
         <activity android:name="com.startapp.android.publish.ads.list3d.List3DActivity"
                   android:theme="@android:style/Theme" />
@@ -57,6 +56,6 @@
           </feature>
       </config-file>
       <source-file src="src/android/StartAppAdsPlugin.java" target-dir="src/startapp/ads/" />
-      <source-file src="src/android/StartAppInApp-4.1.0.jar" target-dir="libs" />
+      <source-file src="src/android/StartAppInApp-4.8.11.jar" target-dir="libs" />
    </platform>
 </plugin>
