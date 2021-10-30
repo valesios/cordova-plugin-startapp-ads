@@ -1,8 +1,8 @@
 {
-  "name": "cordova-plugin-startapp-ads",
+  "name": "cordova-plugin-startio-ads",
   "version": "4.8.11",
   "cordova": {
-    "id": "ccordova-plugin-startapp-ads",
+    "id": "ccordova-plugin-startio-ads",
     "platforms": [
       "android"
     ]
