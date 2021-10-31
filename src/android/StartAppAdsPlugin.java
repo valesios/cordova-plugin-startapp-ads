@@ -77,6 +77,7 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     startAppAd = new StartAppAd(cordova.getActivity());
     StartAppSDK.init(cordova.getActivity(), appID, true);
     StartAppSDK.setUserConsent(cordova.getActivity(), "pas", System.currentTimeMillis(), false);
+    StartAppSDK.setTestAdsEnabled(true);
   }
 
     public void showBanner(CallbackContext callbackContext) {
