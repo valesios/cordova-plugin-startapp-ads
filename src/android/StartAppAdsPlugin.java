@@ -18,18 +18,15 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.startapp.android.publish.ads.nativead.NativeAdDetails;
-import com.startapp.android.publish.ads.nativead.NativeAdPreferences;
-import com.startapp.android.publish.ads.nativead.StartAppNativeAd;
-import com.startapp.android.publish.adsCommon.Ad;
-import com.startapp.android.publish.ads.banner.Banner;
-import com.startapp.android.publish.ads.banner.BannerListener;
-import com.startapp.android.publish.adsCommon.StartAppAd;
-import com.startapp.android.publish.adsCommon.StartAppAd.AdMode;
-import com.startapp.android.publish.adsCommon.StartAppSDK;
-import com.startapp.android.publish.adsCommon.VideoListener;
-import com.startapp.android.publish.adsCommon.adListeners.AdDisplayListener;
-import com.startapp.android.publish.adsCommon.adListeners.AdEventListener;
+import com.startapp.sdk.adsbase.Ad;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.VideoListener;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.startapp.sdk.ads.banner.Banner;
+import com.startapp.sdk.ads.banner.BannerListener;
+import com.startapp.sdk.ads.nativead.NativeAdDetails;
 
 public class StartAppAdsPlugin extends CordovaPlugin {
 
@@ -98,49 +95,68 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     StartAppSDK.setUserConsent(cordova.getActivity(), "pas", System.currentTimeMillis(), false);
   }
 
-  public void showBanner(CallbackContext callbackContext) {
-    startAppBanner = new Banner(cordova.getActivity(), new BannerListener() {
-    	@Override
-    	public void onReceiveAd(View banner) {
-        Log.d(TAG, "Banner has been loaded!");
-        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.load');");
-    	}
+    public void showBanner(CallbackContext callbackContext) {
+        if (startAppBanner == null) {  
+            startAppBanner = new Banner(cordova.getActivity());
+            startAppBanner.setBannerListener(new BannerListener() {
+                @Override
+                public void onReceiveAd(View view) {
+                    Log.d(TAG, "Banner has been loaded!");
+                    cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.load');");				
+                }
 
-    	@Override
-    	public void onFailedToReceiveAd(View banner) {
-        Log.d(TAG, "Banner load failed!");
-        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.load_fail');");
-    	}
+                @Override
+                public void onFailedToReceiveAd(View view) {
+                    Log.d(TAG, "Banner load failed!");
+                    cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.load_fail');");
+                    
+                    if (startAppBanner != null) {
+                        startAppBanner.hideBanner();
+                        startAppBanner.setVisibility(View.GONE);
+                        parentView = null;
+                        startAppBanner = null;
+                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.hide');");
+                    }
+                    
+                }
 
-    	@Override
-    	public void onClick(View banner) {
-        Log.d(TAG, "Banner clicked!");
-        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.clicked');");
-    	}
-    });
+                @Override
+                public void onImpression(View view) {
+                    Log.d(TAG, "Banner Impression!");
+                    cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.impression');");
+                }
 
-    View view = cWebView.getView();
-    ViewGroup wvParentView = (ViewGroup) view.getParent();
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "Banner clicked!");
+                    cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.clicked');");
+                }
+            });
 
-    if (parentView == null) {
-        parentView = new LinearLayout(cWebView.getContext());
+            View view = cWebView.getView();
+            ViewGroup wvParentView = (ViewGroup) view.getParent();
+
+            if (parentView == null) {
+                parentView = new LinearLayout(cWebView.getContext());
+            }
+
+            if (wvParentView != null && wvParentView != parentView) {
+                wvParentView.removeView(view);
+                LinearLayout content = (LinearLayout) parentView;
+                content.setOrientation(LinearLayout.VERTICAL);
+                parentView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
+                view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0F));
+                parentView.addView(view);
+                wvParentView.addView(parentView);
+                parentView.addView(startAppBanner);
+            }
+
+            parentView.bringToFront();
+            parentView.requestLayout();
+            parentView.requestFocus();
+
+        }
     }
-
-    if (wvParentView != null && wvParentView != parentView) {
-        wvParentView.removeView(view);
-        LinearLayout content = (LinearLayout) parentView;
-        content.setOrientation(LinearLayout.VERTICAL);
-        parentView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
-        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0F));
-        parentView.addView(view);
-        wvParentView.addView(parentView);
-        parentView.addView(startAppBanner);
-    }
-
-    parentView.bringToFront();
-    parentView.requestLayout();
-    parentView.requestFocus();
-  }
 
   public void hideBanner(CallbackContext callbackContext) {
     if (startAppBanner != null) {
