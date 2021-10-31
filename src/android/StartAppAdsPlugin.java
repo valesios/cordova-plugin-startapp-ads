@@ -69,23 +69,22 @@ public class StartAppAdsPlugin extends CordovaPlugin {
       });
       return true;
     }
-    else if(action.equals("loadRewardVideo")) {
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    boolean autoShow = args.optBoolean(0);
-                    loadRewardVideo(autoShow, PUBLIC_CALLBACKS);
-                }
-            });
-            return true;
+    else if (action.equals("showInterstitial")) {
+      cordova.getActivity().runOnUiThread(new Runnable() {
+        public void run() {
+          showInterstitial(PUBLIC_CALLBACKS);
         }
-     else if(action.equals("showRewardVideo")) {
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    showRewardVideo(PUBLIC_CALLBACKS);
-                }
-            });
-            return true;
+      });
+      return true;
+    }
+    else if(action.equals("showRewardVideo")) {
+      cordova.getActivity().runOnUiThread(new Runnable() {
+        public void run() {
+          showRewardVideo(PUBLIC_CALLBACKS);
         }
+      });
+      return true;
+    }
     return false;
   }
 
@@ -94,7 +93,7 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     startAppAd = new StartAppAd(cordova.getActivity());
     StartAppSDK.init(cordova.getActivity(), appID, true);
     StartAppSDK.setUserConsent(cordova.getActivity(), "pas", System.currentTimeMillis(), false);
-    StartAppSDK.setTestAdsEnabled(true);
+	StartAppSDK.setTestAdsEnabled(true);
   }
 
     public void showBanner(CallbackContext callbackContext) {
@@ -160,86 +159,79 @@ public class StartAppAdsPlugin extends CordovaPlugin {
         }
     }
 
-  public void hideBanner(CallbackContext callbackContext) {
-    if (startAppBanner != null) {
-        startAppBanner.hideBanner();
-        startAppBanner.setVisibility(View.GONE);
-        parentView = null;
-        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.hide');");
+    public void hideBanner(CallbackContext callbackContext) {
+        if (startAppBanner != null) {
+            startAppBanner.hideBanner();
+            startAppBanner.setVisibility(View.GONE);
+            parentView = null;
+            startAppBanner = null;
+            cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.hide');");
+        }
     }
+
+  public void showInterstitial(CallbackContext callbackContext) {
+    startAppAd.loadAd(new AdEventListener() {
+        @Override
+        public void onReceiveAd(Ad ad) {
+            startAppAd.showAd(new AdDisplayListener() {
+                @Override
+                public void adHidden(Ad ad) {
+                  Log.d(TAG, "Interstitial has been closed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.closed');");
+                }
+
+                @Override
+                public void adDisplayed(Ad ad) {
+                  Log.d(TAG, "Interstitial displayed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.displayed');");
+                }
+
+                @Override
+                public void adClicked(Ad ad) {
+                  Log.d(TAG, "Interstitial Ad clicked!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.clicked');");
+                }
+
+                @Override
+                public void adNotDisplayed(Ad ad) {
+                  Log.d(TAG, "Interstitial Ad not displayed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.not_displayed');");
+                }
+            });
+        }
+
+        @Override
+        public void onFailedToReceiveAd(Ad ad) {
+          Log.d(TAG, "Failed to Receive Interstitial!");
+          cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.load_fail');");
+        }
+    });
   }
 
-    public void showInterstitial(CallbackContext callbackContext) {
-        startAppAd.loadAd(new AdEventListener() {
-            @Override
-            public void onReceiveAd(Ad ad) {
-                startAppAd.showAd(new AdDisplayListener() {
-                    @Override
-                    public void adHidden(Ad ad) {
-                        Log.d(TAG, "Interstitial has been closed!");
-                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.closed');");
-                    }
+  public void showRewardVideo(CallbackContext callbackContext) {
+    final StartAppAd rewardedVideo = new StartAppAd(cordova.getActivity());
 
-                    @Override
-                    public void adDisplayed(Ad ad) {
-                        Log.d(TAG, "Interstitial displayed!");
-                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.displayed');");
-                    }
+    rewardedVideo.setVideoListener(new VideoListener() {
+      @Override
+      public void onVideoCompleted() {
+        Log.d(TAG, "Video Reward can be given now!");
+        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.reward');");
+      }
+    });
 
-                    @Override
-                    public void adClicked(Ad ad) {
-                        Log.d(TAG, "Interstitial Ad clicked!");
-                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.clicked');");
-                    }
+    rewardedVideo.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
+      @Override
+      public void onReceiveAd(Ad arg0) {
+          Log.d(TAG, "Reward Video loaded!");
+          cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.load');");
+          rewardedVideo.showAd();
+      }
 
-                    @Override
-                    public void adNotDisplayed(Ad ad) {
-                        Log.d(TAG, "Interstitial Ad not displayed!");
-                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.not_displayed');");
-                    }
-                });
-            }
-
-            @Override
-            public void onFailedToReceiveAd(Ad ad) {
-                Log.d(TAG, "Failed to Receive Interstitial!");
-                cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.load_fail');");
-            }
-        });    
-    }
-
-    public void loadRewardVideo(Boolean autoShow, CallbackContext callbackContext) {
-        rewardedVideo = new StartAppAd(cordova.getActivity());
-        rewardedVideo.setVideoListener(new VideoListener() {
-            @Override
-            public void onVideoCompleted() {
-                Log.d(TAG, "Video Reward can be given now!");
-                cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.reward');");
-            }
-        });
-
-
-        rewardedVideo.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
-            @Override
-            public void onReceiveAd(Ad ad) {
-                if (autoShow) {   
-                    Log.d(TAG, "Video Reward auto show!");
-                    rewardedVideo.showAd();
-                }
-            }
-
-            @Override
-            public void onFailedToReceiveAd(Ad ad) {
-                Log.d(TAG, "Failed to load Rewarded Video Ad!");
-                cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.load_fail');");
-            }
-        });
-    }
-
-    public void showRewardVideo(CallbackContext callbackContext) {
-        if (rewardedVideo != null) {
-            Log.d(TAG, "Reward Video show now!");
-            rewardedVideo.showAd();    
-        }		
-    }
+      @Override
+      public void onFailedToReceiveAd(Ad arg0) {
+        Log.d(TAG, "Failed to load Rewarded Video Ad!");
+        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.load_fail');");
+      }
+    });
+  }
 }
