@@ -152,7 +152,7 @@ public class StartAppAdsPlugin extends CordovaPlugin {
   }
 
   public void showInterstitial(CallbackContext callbackContext) {
-    startAppAd.loadAd();
+    startAppAd.showAd();
   }
 
 }
