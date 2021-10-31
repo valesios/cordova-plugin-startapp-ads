@@ -69,6 +69,23 @@ public class StartAppAdsPlugin extends CordovaPlugin {
       });
       return true;
     }
+    else if(action.equals("loadRewardVideo")) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    boolean autoShow = args.optBoolean(0);
+                    loadRewardVideo(autoShow, PUBLIC_CALLBACKS);
+                }
+            });
+            return true;
+        }
+     else if(action.equals("showRewardVideo")) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    showRewardVideo(PUBLIC_CALLBACKS);
+                }
+            });
+            return true;
+        }
     return false;
   }
 
