@@ -28,13 +28,13 @@ import com.startapp.sdk.ads.banner.Banner;
 import com.startapp.sdk.ads.banner.BannerListener;
 import com.startapp.sdk.ads.nativead.NativeAdDetails;
 
-import com.startapp.sdk.adsbase.consent.ConsentActivity
-import com.startapp.sdk.ads.list3d.List3DActivity
-import com.startapp.sdk.adsbase.activities.OverlayActivity
-import com.startapp.sdk.adsbase.activities.FullScreenActivity
-import com.startapp.sdk.adsbase.InfoEventService
-import com.startapp.sdk.adsbase.PeriodicJobService
-import com.startapp.sdk.adsbase.remoteconfig.BootCompleteListener
+import com.startapp.sdk.adsbase.consent.ConsentActivity;
+import com.startapp.sdk.ads.list3d.List3DActivity;
+import com.startapp.sdk.adsbase.activities.OverlayActivity;
+import com.startapp.sdk.adsbase.activities.FullScreenActivity;
+import com.startapp.sdk.adsbase.InfoEventService;
+import com.startapp.sdk.adsbase.PeriodicJobService;
+import com.startapp.sdk.adsbase.remoteconfig.BootCompleteListener;
 
 public class StartAppAdsPlugin extends CordovaPlugin {
 
