@@ -151,8 +151,43 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     }
   }
 
-  public void showInterstitial(CallbackContext callbackContext) {
-    startAppAd.showAd();
-  }
+    public void showInterstitial(CallbackContext callbackContext) {
+        startAppAd.loadAd(new AdEventListener() {
+            @Override
+            public void onReceiveAd(Ad ad) {
+                startAppAd.showAd(new AdDisplayListener() {
+                    @Override
+                    public void adHidden(Ad ad) {
+                        Log.d(TAG, "Interstitial has been closed!");
+                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.closed');");
+                    }
+
+                    @Override
+                    public void adDisplayed(Ad ad) {
+                        Log.d(TAG, "Interstitial displayed!");
+                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.displayed');");
+                    }
+
+                    @Override
+                    public void adClicked(Ad ad) {
+                        Log.d(TAG, "Interstitial Ad clicked!");
+                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.clicked');");
+                    }
+
+                    @Override
+                    public void adNotDisplayed(Ad ad) {
+                        Log.d(TAG, "Interstitial Ad not displayed!");
+                        cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.not_displayed');");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailedToReceiveAd(Ad ad) {
+                Log.d(TAG, "Failed to Receive Interstitial!");
+                cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.load_fail');");
+            }
+        });    
+    }
 
 }
