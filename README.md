@@ -1,6 +1,10 @@
 # Cordova Plugin for Start.io (ex. StartApp) Ads
 ### This if fork from <a href="https://github.com/lreiner/cordova-plugin-startapp-ads">Cordova Plugin for StartApp Ads</a>
 
+### This version is incompleate. This plugin can only show banner ads. 
+### If you able to find issue why this plugin is not showing Interstitial and Rewarded ads - I will be very grateful 
+### At this moment this plugin is working on test mode. 
+
 ### 1. Installation
 First you need to install the cordova plugin in your Cordova Project
 
