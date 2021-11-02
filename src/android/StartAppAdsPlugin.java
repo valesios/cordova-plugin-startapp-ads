@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.content.Intent;
 
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
@@ -30,17 +29,18 @@ import com.startapp.sdk.ads.banner.BannerListener;
 import com.startapp.sdk.ads.nativead.NativeAdDetails;
 
 public class StartAppAdsPlugin extends CordovaPlugin {
+	
   private CallbackContext PUBLIC_CALLBACKS = null;
   private static final String TAG = "StartAppAdsPlugin";
   private StartAppAd startAppAd;
   private CordovaWebView cWebView;
   private ViewGroup parentView;
   private Banner startAppBanner;
+	
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
     cWebView = webView;
   }
-	
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
     PUBLIC_CALLBACKS = callbackContext;
     if (action.equals("initStartApp")) {
@@ -85,13 +85,15 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     }
     return false;
   }
+	
   public void initStartApp(CallbackContext callbackContext, String appID) {
     Log.d(TAG, "Initializing StartApp SDK with ID: " +  appID);
     startAppAd = new StartAppAd(cordova.getActivity());
     StartAppSDK.init(cordova.getActivity(), appID, true);
     StartAppSDK.setUserConsent(cordova.getActivity(), "pas", System.currentTimeMillis(), false);
-	StartAppSDK.setTestAdsEnabled(true);
+    StartAppSDK.setTestAdsEnabled(true);
   }
+	
     public void showBanner(CallbackContext callbackContext) {
         if (startAppBanner == null) {  
             startAppBanner = new Banner(cordova.getActivity());
@@ -157,10 +159,44 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     }
 
   public void showInterstitial(CallbackContext callbackContext) {
-	  startActivity(new Intent(cordova.getActivity(), OtherActivity.class));
-	  StartAppAd.showAd(cordova.getActivity());
+    startAppAd.loadAd(new AdEventListener() {
+        @Override
+        public void onReceiveAd(Ad ad) {
+            startAppAd.showAd(new AdDisplayListener() {
+                @Override
+                public void adHidden(Ad ad) {
+                  Log.d(TAG, "Interstitial has been closed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.closed');");
+                }
+
+                @Override
+                public void adDisplayed(Ad ad) {
+                  Log.d(TAG, "Interstitial displayed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.displayed');");
+                }
+
+                @Override
+                public void adClicked(Ad ad) {
+                  Log.d(TAG, "Interstitial Ad clicked!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.clicked');");
+                }
+
+                @Override
+                public void adNotDisplayed(Ad ad) {
+                  Log.d(TAG, "Interstitial Ad not displayed!");
+                  cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.not_displayed');");
+                }
+            });
+		StartAppAd.showAd(this);
+        }
+
+        @Override
+        public void onFailedToReceiveAd(Ad ad) {
+          Log.d(TAG, "Failed to Receive Interstitial!");
+          cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.load_fail');");
+        }
+    });
   }
-  
   public void showRewardVideo(CallbackContext callbackContext) {
     final StartAppAd rewardedVideo = new StartAppAd(cordova.getActivity());
     rewardedVideo.setVideoListener(new VideoListener() {
