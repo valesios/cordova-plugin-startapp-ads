@@ -1,23 +1,19 @@
 package com.startapp.cordova.ad;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PluginResult.Status;
-
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import android.util.Log;
 import android.app.Activity;
 import android.view.View;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
@@ -27,24 +23,19 @@ import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.ads.banner.Banner;
 import com.startapp.sdk.ads.banner.BannerListener;
 import com.startapp.sdk.ads.nativead.NativeAdDetails;
-
 public class StartAppAdsPlugin extends CordovaPlugin {
-
   private CallbackContext PUBLIC_CALLBACKS = null;
   private static final String TAG = "StartAppAdsPlugin";
   private StartAppAd startAppAd;
   private CordovaWebView cWebView;
   private ViewGroup parentView;
   private Banner startAppBanner;
-
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
     cWebView = webView;
   }
-
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
     PUBLIC_CALLBACKS = callbackContext;
-
     if (action.equals("initStartApp")) {
       cordova.getActivity().runOnUiThread(new Runnable() {
         public void run() {
@@ -87,7 +78,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     }
     return false;
   }
-
   public void initStartApp(CallbackContext callbackContext, String appID) {
     Log.d(TAG, "Initializing StartApp SDK with ID: " +  appID);
     startAppAd = new StartAppAd(cordova.getActivity());
@@ -95,7 +85,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     StartAppSDK.setUserConsent(cordova.getActivity(), "pas", System.currentTimeMillis(), false);
 	StartAppSDK.setTestAdsEnabled(true);
   }
-
     public void showBanner(CallbackContext callbackContext) {
         if (startAppBanner == null) {  
             startAppBanner = new Banner(cordova.getActivity());
@@ -105,7 +94,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
                     Log.d(TAG, "Banner has been loaded!");
                     cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.load');");				
                 }
-
                 @Override
                 public void onFailedToReceiveAd(View view) {
                     Log.d(TAG, "Banner load failed!");
@@ -120,27 +108,22 @@ public class StartAppAdsPlugin extends CordovaPlugin {
                     }
                     
                 }
-
                 @Override
                 public void onImpression(View view) {
                     Log.d(TAG, "Banner Impression!");
                     cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.impression');");
                 }
-
                 @Override
                 public void onClick(View view) {
                     Log.d(TAG, "Banner clicked!");
                     cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.banner.clicked');");
                 }
             });
-
             View view = cWebView.getView();
             ViewGroup wvParentView = (ViewGroup) view.getParent();
-
             if (parentView == null) {
                 parentView = new LinearLayout(cWebView.getContext());
             }
-
             if (wvParentView != null && wvParentView != parentView) {
                 wvParentView.removeView(view);
                 LinearLayout content = (LinearLayout) parentView;
@@ -151,14 +134,11 @@ public class StartAppAdsPlugin extends CordovaPlugin {
                 wvParentView.addView(parentView);
                 parentView.addView(startAppBanner);
             }
-
             parentView.bringToFront();
             parentView.requestLayout();
             parentView.requestFocus();
-
         }
     }
-
     public void hideBanner(CallbackContext callbackContext) {
         if (startAppBanner != null) {
             startAppBanner.hideBanner();
@@ -171,19 +151,10 @@ public class StartAppAdsPlugin extends CordovaPlugin {
 
   public void showInterstitial(CallbackContext callbackContext) {
 		StartAppAd.showAd(cordova.getActivity());
-        }
-
-        @Override
-        public void onFailedToReceiveAd(Ad ad) {
-          Log.d(TAG, "Failed to Receive Interstitial!");
-          cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.load_fail');");
-        }
-    });
   }
-
+  
   public void showRewardVideo(CallbackContext callbackContext) {
     final StartAppAd rewardedVideo = new StartAppAd(cordova.getActivity());
-
     rewardedVideo.setVideoListener(new VideoListener() {
       @Override
       public void onVideoCompleted() {
@@ -191,7 +162,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
         cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.reward');");
       }
     });
-
     rewardedVideo.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
       @Override
       public void onReceiveAd(Ad arg0) {
@@ -199,7 +169,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
           cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.reward_video.load');");
           rewardedVideo.showAd();
       }
-
       @Override
       public void onFailedToReceiveAd(Ad arg0) {
         Log.d(TAG, "Failed to load Rewarded Video Ad!");
