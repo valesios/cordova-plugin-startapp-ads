@@ -1,19 +1,23 @@
 package com.startapp.cordova.ad;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PluginResult.Status;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import android.util.Log;
 import android.app.Activity;
 import android.view.View;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
@@ -23,6 +27,7 @@ import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.ads.banner.Banner;
 import com.startapp.sdk.ads.banner.BannerListener;
 import com.startapp.sdk.ads.nativead.NativeAdDetails;
+
 public class StartAppAdsPlugin extends CordovaPlugin {
   private CallbackContext PUBLIC_CALLBACKS = null;
   private static final String TAG = "StartAppAdsPlugin";
@@ -34,6 +39,7 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     super.initialize(cordova, webView);
     cWebView = webView;
   }
+	
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
     PUBLIC_CALLBACKS = callbackContext;
     if (action.equals("initStartApp")) {
