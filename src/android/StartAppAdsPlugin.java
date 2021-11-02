@@ -156,7 +156,8 @@ public class StartAppAdsPlugin extends CordovaPlugin {
     }
 
   public void showInterstitial(CallbackContext callbackContext) {
-		StartAppAd.showAd(cordova.getActivity());
+	  startActivity(new Intent(cordova.getActivity(), OtherActivity.class));
+	  StartAppAd.showAd(cordova.getActivity());
   }
   
   public void showRewardVideo(CallbackContext callbackContext) {
