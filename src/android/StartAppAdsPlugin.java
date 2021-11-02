@@ -187,7 +187,6 @@ public class StartAppAdsPlugin extends CordovaPlugin {
                   cWebView.loadUrl("javascript:cordova.fireDocumentEvent('startappads.interstitial.not_displayed');");
                 }
             });
-		StartAppAd.showAd(this);
         }
 
         @Override
