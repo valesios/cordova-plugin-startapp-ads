@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppAd.AdMode;
 import com.startapp.sdk.adsbase.StartAppSDK;
 import com.startapp.sdk.adsbase.VideoListener;
 import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
